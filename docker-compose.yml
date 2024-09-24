@@ -1,0 +1,29 @@
+services:
+
+  creze-api:
+    container_name: creze-api
+    entrypoint: ./entrypoint.sh
+    build:
+      context: .
+    volumes:
+      - .:/code
+    networks:
+      - creze
+    environment:
+      - DJANGO_ENV=prod
+
+  nginx:
+    image: nginx:1.27.1
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - .:/code
+    networks:
+      - creze
+    depends_on:
+      - creze-api
+
+networks:
+  creze:
